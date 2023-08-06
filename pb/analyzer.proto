@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+message UUID {
+  string id = 1;
+}
+
+message LogInstance {
+  UUID id = 1;
+  string servName = 2;
+  string log = 3;
+}
+
+enum ParseMode {
+  Parsed = 0;
+  Unparsed = 1;
+}
+
+// Possible improvements:
+// 1. Send a init message, with pipeline id, and for that pipeline id, the id->serviceName mapping, and parseMode
+// 2. Server saves that data, thus reducing bandwidth reqs for each message
+
+message AnalyzerRequest {
+  UUID id = 1;
+  ParseMode parseMode = 2;
+  repeated LogInstance recent = 3;
+  repeated LogInstance history = 4;
+}
+
+message AnalyzerResponse {
+  UUID id = 1;
+  uint32 rating = 2;
+  string review = 3;
+  string insight = 4;
+  string citation = 5;
+}
+
+service Analyzer {
+  rpc analyzeLog(stream AnalyzerRequest) returns (stream AnalyzerResponse) {}
+}

@@ -1,3 +1,6 @@
+import collections
+from typing import Iterator
+
 import pb.analyzer_pb2 as analyzer_pb2
 import pb.analyzer_pb2_grpc as analyzer_pb2_grpc
 import pb.analyzer_pb2_grpc as grpc_stub
@@ -11,14 +14,17 @@ class AnalyzerServicer(grpc_stub.AnalyzerServicer):
         print('hello')
         pass
 
-    def analyzeLog(self, request_iterator, context):
-        yield analyzer_pb2.AnalyzerResponse(
-            id=analyzer_pb2.UUID(id="some-uuid"),
-            rating=7,
-            review="Mildly dangerous",
-            insight="Ignore bro",
-            citation="Line 32"
-        )
+    def analyzeLog(self, request_iterator: Iterator[analyzer_pb2.AnalyzerRequest], context):
+        for req in request_iterator:
+            print(req)
+            # Dummy response, yield for every request
+            yield analyzer_pb2.AnalyzerResponse(
+                id=analyzer_pb2.UUID(id="some-uuid"),
+                rating=7,
+                review="Mildly dangerous",
+                insight="Ignore bro",
+                citation="Line 32"
+            )
 
 
 def serve():

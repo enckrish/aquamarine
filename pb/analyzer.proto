@@ -36,6 +36,13 @@ message AnalyzerResponse {
   string citation = 5;
 }
 
+message Empty {}
+message Prompt {
+  string tmp = 1;
+  string pmt = 2;
+}
+
 service Analyzer {
   rpc analyzeLog(stream AnalyzerRequest) returns (stream AnalyzerResponse) {}
+  rpc llmPrompt(Prompt) returns (Prompt) {}
 }

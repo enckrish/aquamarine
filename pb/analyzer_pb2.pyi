@@ -55,8 +55,14 @@ class AnalyzerResponse(_message.Message):
     citation: str
     def __init__(self, id: _Optional[_Union[UUID, _Mapping]] = ..., rating: _Optional[int] = ..., review: _Optional[str] = ..., insight: _Optional[str] = ..., citation: _Optional[str] = ...) -> None: ...
 
-class Test(_message.Message):
-    __slots__ = ["a"]
-    A_FIELD_NUMBER: _ClassVar[int]
-    a: int
-    def __init__(self, a: _Optional[int] = ...) -> None: ...
+class Empty(_message.Message):
+    __slots__ = []
+    def __init__(self) -> None: ...
+
+class Prompt(_message.Message):
+    __slots__ = ["tmp", "pmt"]
+    TMP_FIELD_NUMBER: _ClassVar[int]
+    PMT_FIELD_NUMBER: _ClassVar[int]
+    tmp: str
+    pmt: str
+    def __init__(self, tmp: _Optional[str] = ..., pmt: _Optional[str] = ...) -> None: ...

@@ -7,12 +7,16 @@ import pb.analyzer_pb2_grpc as grpc_stub
 import grpc
 from concurrent import futures
 from grpc_reflection.v1alpha import reflection
-
+from google.protobuf.json_format import MessageToJson, ParseDict
+# from archive.llmc import run_llm
+from archive.autogptpl import analys
 
 class AnalyzerServicer(grpc_stub.AnalyzerServicer):
     def __init__(self):
-        print('hello')
         pass
+
+    def llmPrompt(self, request: analyzer_pb2.Prompt, context):
+        return analyzer_pb2.Prompt(pmt=analys(request.tmp, request.pmt))
 
     def analyzeLog(self, request_iterator: Iterator[analyzer_pb2.AnalyzerRequest], context):
         for req in request_iterator:

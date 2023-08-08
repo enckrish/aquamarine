@@ -14,28 +14,28 @@ class AnalyzerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Fntest = channel.unary_unary(
-                '/Analyzer/Fntest',
-                request_serializer=pb_dot_analyzer__pb2.Test.SerializeToString,
-                response_deserializer=pb_dot_analyzer__pb2.Test.FromString,
-                )
         self.analyzeLog = channel.stream_stream(
                 '/Analyzer/analyzeLog',
                 request_serializer=pb_dot_analyzer__pb2.AnalyzerRequest.SerializeToString,
                 response_deserializer=pb_dot_analyzer__pb2.AnalyzerResponse.FromString,
+                )
+        self.llmPrompt = channel.unary_unary(
+                '/Analyzer/llmPrompt',
+                request_serializer=pb_dot_analyzer__pb2.Prompt.SerializeToString,
+                response_deserializer=pb_dot_analyzer__pb2.Prompt.FromString,
                 )
 
 
 class AnalyzerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Fntest(self, request, context):
+    def analyzeLog(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def analyzeLog(self, request_iterator, context):
+    def llmPrompt(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -44,15 +44,15 @@ class AnalyzerServicer(object):
 
 def add_AnalyzerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Fntest': grpc.unary_unary_rpc_method_handler(
-                    servicer.Fntest,
-                    request_deserializer=pb_dot_analyzer__pb2.Test.FromString,
-                    response_serializer=pb_dot_analyzer__pb2.Test.SerializeToString,
-            ),
             'analyzeLog': grpc.stream_stream_rpc_method_handler(
                     servicer.analyzeLog,
                     request_deserializer=pb_dot_analyzer__pb2.AnalyzerRequest.FromString,
                     response_serializer=pb_dot_analyzer__pb2.AnalyzerResponse.SerializeToString,
+            ),
+            'llmPrompt': grpc.unary_unary_rpc_method_handler(
+                    servicer.llmPrompt,
+                    request_deserializer=pb_dot_analyzer__pb2.Prompt.FromString,
+                    response_serializer=pb_dot_analyzer__pb2.Prompt.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -63,23 +63,6 @@ def add_AnalyzerServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class Analyzer(object):
     """Missing associated documentation comment in .proto file."""
-
-    @staticmethod
-    def Fntest(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Analyzer/Fntest',
-            pb_dot_analyzer__pb2.Test.SerializeToString,
-            pb_dot_analyzer__pb2.Test.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def analyzeLog(request_iterator,
@@ -95,5 +78,22 @@ class Analyzer(object):
         return grpc.experimental.stream_stream(request_iterator, target, '/Analyzer/analyzeLog',
             pb_dot_analyzer__pb2.AnalyzerRequest.SerializeToString,
             pb_dot_analyzer__pb2.AnalyzerResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def llmPrompt(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Analyzer/llmPrompt',
+            pb_dot_analyzer__pb2.Prompt.SerializeToString,
+            pb_dot_analyzer__pb2.Prompt.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

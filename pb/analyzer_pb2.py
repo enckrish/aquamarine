@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11pb/analyzer.proto\"\x12\n\x04UUID\x12\n\n\x02id\x18\x01 \x01(\t\"?\n\x0bLogInstance\x12\x11\n\x02id\x18\x01 \x01(\x0b\x32\x05.UUID\x12\x10\n\x08servName\x18\x02 \x01(\t\x12\x0b\n\x03log\x18\x03 \x01(\t\"\x80\x01\n\x0f\x41nalyzerRequest\x12\x11\n\x02id\x18\x01 \x01(\x0b\x32\x05.UUID\x12\x1d\n\tparseMode\x18\x02 \x01(\x0e\x32\n.ParseMode\x12\x1c\n\x06recent\x18\x03 \x03(\x0b\x32\x0c.LogInstance\x12\x1d\n\x07history\x18\x04 \x03(\x0b\x32\x0c.LogInstance\"h\n\x10\x41nalyzerResponse\x12\x11\n\x02id\x18\x01 \x01(\x0b\x32\x05.UUID\x12\x0e\n\x06rating\x18\x02 \x01(\r\x12\x0e\n\x06review\x18\x03 \x01(\t\x12\x0f\n\x07insight\x18\x04 \x01(\t\x12\x10\n\x08\x63itation\x18\x05 \x01(\t\"\x11\n\x04Test\x12\t\n\x01\x61\x18\x01 \x01(\x05*%\n\tParseMode\x12\n\n\x06Parsed\x10\x00\x12\x0c\n\x08Unparsed\x10\x01\x32]\n\x08\x41nalyzer\x12\x18\n\x06\x46ntest\x12\x05.Test\x1a\x05.Test\"\x00\x12\x37\n\nanalyzeLog\x12\x10.AnalyzerRequest\x1a\x11.AnalyzerResponse\"\x00(\x01\x30\x01\x42\x06Z\x04./pbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11pb/analyzer.proto\"\x12\n\x04UUID\x12\n\n\x02id\x18\x01 \x01(\t\"?\n\x0bLogInstance\x12\x11\n\x02id\x18\x01 \x01(\x0b\x32\x05.UUID\x12\x10\n\x08servName\x18\x02 \x01(\t\x12\x0b\n\x03log\x18\x03 \x01(\t\"\x80\x01\n\x0f\x41nalyzerRequest\x12\x11\n\x02id\x18\x01 \x01(\x0b\x32\x05.UUID\x12\x1d\n\tparseMode\x18\x02 \x01(\x0e\x32\n.ParseMode\x12\x1c\n\x06recent\x18\x03 \x03(\x0b\x32\x0c.LogInstance\x12\x1d\n\x07history\x18\x04 \x03(\x0b\x32\x0c.LogInstance\"h\n\x10\x41nalyzerResponse\x12\x11\n\x02id\x18\x01 \x01(\x0b\x32\x05.UUID\x12\x0e\n\x06rating\x18\x02 \x01(\r\x12\x0e\n\x06review\x18\x03 \x01(\t\x12\x0f\n\x07insight\x18\x04 \x01(\t\x12\x10\n\x08\x63itation\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"\"\n\x06Prompt\x12\x0b\n\x03tmp\x18\x01 \x01(\t\x12\x0b\n\x03pmt\x18\x02 \x01(\t*%\n\tParseMode\x12\n\n\x06Parsed\x10\x00\x12\x0c\n\x08Unparsed\x10\x01\x32\x64\n\x08\x41nalyzer\x12\x37\n\nanalyzeLog\x12\x10.AnalyzerRequest\x1a\x11.AnalyzerResponse\"\x00(\x01\x30\x01\x12\x1f\n\tllmPrompt\x12\x07.Prompt\x1a\x07.Prompt\"\x00\x42\x06Z\x04./pbb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,8 +22,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\004./pb'
-  _globals['_PARSEMODE']._serialized_start=362
-  _globals['_PARSEMODE']._serialized_end=399
+  _globals['_PARSEMODE']._serialized_start=388
+  _globals['_PARSEMODE']._serialized_end=425
   _globals['_UUID']._serialized_start=21
   _globals['_UUID']._serialized_end=39
   _globals['_LOGINSTANCE']._serialized_start=41
@@ -32,8 +32,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_ANALYZERREQUEST']._serialized_end=235
   _globals['_ANALYZERRESPONSE']._serialized_start=237
   _globals['_ANALYZERRESPONSE']._serialized_end=341
-  _globals['_TEST']._serialized_start=343
-  _globals['_TEST']._serialized_end=360
-  _globals['_ANALYZER']._serialized_start=401
-  _globals['_ANALYZER']._serialized_end=494
+  _globals['_EMPTY']._serialized_start=343
+  _globals['_EMPTY']._serialized_end=350
+  _globals['_PROMPT']._serialized_start=352
+  _globals['_PROMPT']._serialized_end=386
+  _globals['_ANALYZER']._serialized_start=427
+  _globals['_ANALYZER']._serialized_end=527
 # @@protoc_insertion_point(module_scope)

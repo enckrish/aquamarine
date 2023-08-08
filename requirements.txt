@@ -1,1 +1,12 @@
-grpc
+grpcio
+grpcio-reflection
+-i https://download.pytorch.org/whl/cu118
+torch
+langchain
+transformers
+bitsandbytes-windows
+accelerate
+xformers
+einops
+scipy
+sentencepiece

@@ -1,0 +1,5 @@
+{
+  "templates": [
+    "Generate a JSON object `result`, from the log of a running process.\n\n`result.severity` may be none, low, medium, high, or critical based on perceived risk/severity. \n`result.mitigation_steps` is an array of concise steps to mitigate the risks, only if required.\n`result.info` has all the useful information extracted from the logs.\n`result.detail` is a review of the logs, from the viewpoint of a compliance monitoring service, and log analyzer\n`result.reason` explains the reasoning behind the severity given.\n\nYou should only give the RESPONSE in JSON with one single object `result`.\n\nSERVICE: {services}\n\n### LOGS:\n{prompt}\n\n### RESPONSE:"
+  ]
+}

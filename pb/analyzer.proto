@@ -1,48 +1,62 @@
 syntax = "proto3";
-
 option go_package = "./pb";
 
 message UUID {
   string id = 1;
 }
 
-message LogInstance {
-  UUID id = 1;
-  string servName = 2;
-  string log = 3;
+// Before sending any requests, client has to let the server know
+// Type0 corresponds to `isolated` service logs, in future new types may be added
+// like for combined log streams
+enum Type {
+  t0 = 0;
+  t1 = 1;
 }
 
-enum ParseMode {
-  Parsed = 0;
-  Unparsed = 1;
+message InitRequest_Type0 {
+  string service = 1;
+  uint32 historySize = 2;
 }
 
-// Possible improvements:
-// 1. Send a init message, with pipeline id, and for that pipeline id, the id->serviceName mapping, and parseMode
-// 2. Server saves that data, thus reducing bandwidth reqs for each message
+// The handling of multiple streams is left on the server
+message InitRequest_Type1 {
+  repeated UUID ids = 1;
+}
 
-message AnalyzerRequest {
+// This same id should be sent with all messages for the registered stream
+message InitResponse_Type0 {
   UUID id = 1;
-  ParseMode parseMode = 2;
-  repeated LogInstance recent = 3;
-  repeated LogInstance history = 4;
+}
+
+// Contains multiple log lines from a single service
+message LogInstance_Type0 {
+  repeated string logs = 1;
+}
+
+message AnalyzerRequest_Type0 {
+  UUID id = 1;
+  LogInstance_Type0 logs = 2;
 }
 
 message AnalyzerResponse {
   UUID id = 1;
   uint32 rating = 2;
-  string review = 3;
-  string insight = 4;
-  string citation = 5;
+  repeated string actionsInsights = 3;
+  string review = 4;
+  // Citation is a pointer to a log or a group of logs, that the model thinks to have issue
+  // It should contain the line number of line number
+  uint64 citation = 5;
+}
+
+message String {
+  string str = 1;
 }
 
 message Empty {}
-message Prompt {
-  string tmp = 1;
-  string pmt = 2;
-}
 
 service Analyzer {
-  rpc analyzeLog(stream AnalyzerRequest) returns (stream AnalyzerResponse) {}
-  rpc llmPrompt(Prompt) returns (Prompt) {}
+  rpc admin_setPromptTmpl(String) returns(Empty) {}
+
+  rpc init_type0(InitRequest_Type0) returns (InitResponse_Type0) {};
+  rpc analyzeLog_Type0(stream AnalyzerRequest_Type0) returns (stream AnalyzerResponse) {}
 }

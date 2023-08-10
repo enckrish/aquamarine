@@ -14,28 +14,39 @@ class AnalyzerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.analyzeLog = channel.stream_stream(
-                '/Analyzer/analyzeLog',
-                request_serializer=pb_dot_analyzer__pb2.AnalyzerRequest.SerializeToString,
-                response_deserializer=pb_dot_analyzer__pb2.AnalyzerResponse.FromString,
+        self.admin_setPromptTmpl = channel.unary_unary(
+                '/Analyzer/admin_setPromptTmpl',
+                request_serializer=pb_dot_analyzer__pb2.String.SerializeToString,
+                response_deserializer=pb_dot_analyzer__pb2.Empty.FromString,
                 )
-        self.llmPrompt = channel.unary_unary(
-                '/Analyzer/llmPrompt',
-                request_serializer=pb_dot_analyzer__pb2.Prompt.SerializeToString,
-                response_deserializer=pb_dot_analyzer__pb2.Prompt.FromString,
+        self.init_type0 = channel.unary_unary(
+                '/Analyzer/init_type0',
+                request_serializer=pb_dot_analyzer__pb2.InitRequest_Type0.SerializeToString,
+                response_deserializer=pb_dot_analyzer__pb2.InitResponse_Type0.FromString,
+                )
+        self.analyzeLog_Type0 = channel.stream_stream(
+                '/Analyzer/analyzeLog_Type0',
+                request_serializer=pb_dot_analyzer__pb2.AnalyzerRequest_Type0.SerializeToString,
+                response_deserializer=pb_dot_analyzer__pb2.AnalyzerResponse.FromString,
                 )
 
 
 class AnalyzerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def analyzeLog(self, request_iterator, context):
+    def admin_setPromptTmpl(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def llmPrompt(self, request, context):
+    def init_type0(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def analyzeLog_Type0(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -44,15 +55,20 @@ class AnalyzerServicer(object):
 
 def add_AnalyzerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'analyzeLog': grpc.stream_stream_rpc_method_handler(
-                    servicer.analyzeLog,
-                    request_deserializer=pb_dot_analyzer__pb2.AnalyzerRequest.FromString,
-                    response_serializer=pb_dot_analyzer__pb2.AnalyzerResponse.SerializeToString,
+            'admin_setPromptTmpl': grpc.unary_unary_rpc_method_handler(
+                    servicer.admin_setPromptTmpl,
+                    request_deserializer=pb_dot_analyzer__pb2.String.FromString,
+                    response_serializer=pb_dot_analyzer__pb2.Empty.SerializeToString,
             ),
-            'llmPrompt': grpc.unary_unary_rpc_method_handler(
-                    servicer.llmPrompt,
-                    request_deserializer=pb_dot_analyzer__pb2.Prompt.FromString,
-                    response_serializer=pb_dot_analyzer__pb2.Prompt.SerializeToString,
+            'init_type0': grpc.unary_unary_rpc_method_handler(
+                    servicer.init_type0,
+                    request_deserializer=pb_dot_analyzer__pb2.InitRequest_Type0.FromString,
+                    response_serializer=pb_dot_analyzer__pb2.InitResponse_Type0.SerializeToString,
+            ),
+            'analyzeLog_Type0': grpc.stream_stream_rpc_method_handler(
+                    servicer.analyzeLog_Type0,
+                    request_deserializer=pb_dot_analyzer__pb2.AnalyzerRequest_Type0.FromString,
+                    response_serializer=pb_dot_analyzer__pb2.AnalyzerResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -65,7 +81,7 @@ class Analyzer(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def analyzeLog(request_iterator,
+    def admin_setPromptTmpl(request,
             target,
             options=(),
             channel_credentials=None,
@@ -75,14 +91,14 @@ class Analyzer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_stream(request_iterator, target, '/Analyzer/analyzeLog',
-            pb_dot_analyzer__pb2.AnalyzerRequest.SerializeToString,
-            pb_dot_analyzer__pb2.AnalyzerResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/Analyzer/admin_setPromptTmpl',
+            pb_dot_analyzer__pb2.String.SerializeToString,
+            pb_dot_analyzer__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def llmPrompt(request,
+    def init_type0(request,
             target,
             options=(),
             channel_credentials=None,
@@ -92,8 +108,25 @@ class Analyzer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Analyzer/llmPrompt',
-            pb_dot_analyzer__pb2.Prompt.SerializeToString,
-            pb_dot_analyzer__pb2.Prompt.FromString,
+        return grpc.experimental.unary_unary(request, target, '/Analyzer/init_type0',
+            pb_dot_analyzer__pb2.InitRequest_Type0.SerializeToString,
+            pb_dot_analyzer__pb2.InitResponse_Type0.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def analyzeLog_Type0(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/Analyzer/analyzeLog_Type0',
+            pb_dot_analyzer__pb2.AnalyzerRequest_Type0.SerializeToString,
+            pb_dot_analyzer__pb2.AnalyzerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -2,7 +2,7 @@ import server
 
 
 def main():
-    server.serve()
+    server.listen()
 
 
 if __name__ == '__main__':

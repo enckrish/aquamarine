@@ -1,0 +1,29 @@
+syntax = "proto3";
+option go_package = "./pb";
+
+message InitRequest_Type0 {
+  // should not be filled in upstream
+  string streamId = 1;
+  string service = 2;
+  uint32 historySize = 3;
+}
+
+// This same id should be sent with all messages for the registered stream
+message InitResponse_Type0 {
+  string streamId = 1;
+}
+
+message AnalyzerRequest_Type0 {
+  string streamId = 1;
+  string messageId = 2;
+  repeated string logs = 3;
+}
+
+message AnalyzerResponse {
+  bool committed = 1;
+}
+
+service Router {
+  rpc init_Type0(InitRequest_Type0) returns (InitResponse_Type0) {};
+  rpc routeLog_Type0(stream AnalyzerRequest_Type0) returns (stream AnalyzerResponse) {}
+}

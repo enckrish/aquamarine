@@ -12,3 +12,4 @@ scipy
 sentencepiece
 jsonformer
 auto-gptq
+confluent-kafka

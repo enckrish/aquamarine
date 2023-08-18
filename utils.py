@@ -1,8 +1,15 @@
+import os
+import random
 from collections import deque
 from typing import List, Dict
 import json
 from pb import router_pb2 as pb
 from confluent_kafka import Producer
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+import dotenv
+
+dotenv.load_dotenv()
 
 DEBUG = True  # in prod, set to False
 USE_LLM = False  # in prod, set to True
@@ -45,7 +52,7 @@ class AnalyzerServicer:
         res = None
         if not USE_LLM:
             # Dummy response
-            res = build_analysis_dict(req.streamId, req.messageId, 0, [], "", 1)
+            res = build_analysis_dict(req.streamId, req.messageId, random.randint(0, 5), [], "", 1)
         elif req.streamId not in self.data_store:
             res = build_analysis_dict(req.streamId, req.messageId, 0, [], "", -1)
         else:
@@ -81,6 +88,8 @@ class AnalyzerServicer:
         return True
 
     def analyze_log_type0(self, req: pb.AnalyzerRequest_Type0):
+        if req.streamId not in self.data_store:
+            return build_analysis_dict("", "", 0, [], "", -1)
         analysis = self.route(req)
         if analysis['citation'] == -1:  # Invalid Key
             return analysis
@@ -91,3 +100,15 @@ class AnalyzerServicer:
         )
         self.producer.flush()
         return analysis
+
+
+def get_mongo_client() -> MongoClient:
+    uri = f"mongodb+srv://ksengupta2911:{os.getenv('MONGO_PASSWORD')}@amberine-mumbai.g57yunl.mongodb.net/?retryWrites=true&w=majority"
+    # Create a new client and connect to the server
+    client = MongoClient(uri, server_api=ServerApi('1'))
+
+    # Send a ping to confirm a successful connection
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+
+    return client

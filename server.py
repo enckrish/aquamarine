@@ -1,6 +1,7 @@
 import json
 import sys
 
+import leader
 from pb import router_pb2 as pb
 from confluent_kafka import Producer, Consumer, KafkaError, KafkaException, Message
 import socket
@@ -63,10 +64,13 @@ def msg_process(msg: Message):
     decoded = msg.value().decode("utf-8")
     decoded_pb = json.loads(decoded)
 
-    print("Topic:", topic, decoded_pb)
+    # print("Topic:", topic, decoded_pb)
     if topic == analysisRequestStoreTopic:
         init_msg = 'messageId' not in decoded_pb
         if init_msg:
+            print("Init message:", decoded_pb['streamId'])
+            if not leader.is_target(decoded_pb['service']):
+                return
             data = pb.InitRequest_Type0(
                 streamId=decoded_pb['streamId'],
                 service=decoded_pb['service'],

@@ -13,3 +13,6 @@ sentencepiece
 jsonformer
 auto-gptq
 confluent-kafka
+
+python-dotenv~=1.0.0
+pymongo~=4.4.1

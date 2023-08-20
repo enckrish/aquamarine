@@ -1,0 +1,15 @@
+Generate a JSON object `result`, from the log of a running process.
+
+`result.rating` may be none, low, medium, high, or critical based on perceived risk/severity.
+`result.actions` is an array of concise steps to mitigate the risks, only if required.
+`result.review` is a review of the logs, from the viewpoint of a compliance monitoring service, and log analyzer
+`result.citation` gives the line number as integer of the log with issue.
+
+You should only give the RESPONSE in JSON with one single object `result`.
+
+### SERVICE: {service}
+
+### LOGS:
+{recent}
+
+### RESPONSE:

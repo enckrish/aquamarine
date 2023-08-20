@@ -1,7 +1,5 @@
 grpcio
 grpcio-reflection
--i https://download.pytorch.org/whl/cu118
-torch
 langchain
 transformers==4.31.0
 bitsandbytes-windows
@@ -11,6 +9,7 @@ einops
 scipy
 sentencepiece
 jsonformer
+# Before auto-gptq install torch cuda 11.8 using command from torch homepage
 auto-gptq
 confluent-kafka
 

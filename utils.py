@@ -12,7 +12,7 @@ import dotenv
 dotenv.load_dotenv()
 
 DEBUG = True  # in prod, set to False
-USE_LLM = False  # in prod, set to True
+USE_LLM = True  # in prod, set to True
 if not DEBUG or USE_LLM:
     from autogptpl import analyze_log
 
@@ -63,7 +63,7 @@ class AnalyzerServicer:
     def analyzer_wrapper_fn(self, req: pb.AnalyzerRequest_Type0):
         meta = self.data_store[str(req.streamId)]
         history = meta.get_history()
-        fmt_out, out = analyze_log(prompt_template=self.prompt_template,
+        fmt_out, out = analyze_log(
                                    service=meta.service,
                                    history=history,
                                    recent=req.logs
@@ -72,7 +72,7 @@ class AnalyzerServicer:
         res = build_analysis_dict(
             req.streamId, req.messageId,
             fmt_out['rating'],
-            fmt_out['actionable_insights'],
+            fmt_out['actions'],
             fmt_out['review'], fmt_out['citation']
         )
 
@@ -90,6 +90,7 @@ class AnalyzerServicer:
     def analyze_log_type0(self, req: pb.AnalyzerRequest_Type0):
         if req.streamId not in self.data_store:
             return build_analysis_dict("", "", 0, [], "", -1)
+        print(f"Now analyzing: streamId: {req.streamId} messageId: {req.messageId}")
         analysis = self.route(req)
         if analysis['citation'] == -1:  # Invalid Key
             return analysis

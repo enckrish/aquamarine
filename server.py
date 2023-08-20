@@ -1,5 +1,8 @@
 import json
+import os
 import sys
+
+import confluent_kafka
 
 import leader
 from pb import router_pb2 as pb
@@ -7,8 +10,11 @@ from confluent_kafka import Producer, Consumer, KafkaError, KafkaException, Mess
 import socket
 
 from utils import AnalyzerServicer
+import dotenv
 
-bootstrap_servers = "localhost:9092"
+dotenv.load_dotenv()
+
+bootstrap_servers = os.getenv("AMBER_KAFKA_URL")
 kafka_conf = {
     'bootstrap.servers': bootstrap_servers,
     'client.id': socket.gethostname(),
@@ -33,10 +39,16 @@ def listen():
     basic_consume_loop(consumer)
 
 
+def my_on_assign(consumer, partitions):
+    # for p in partitions:
+    #     p.offset = -1
+    consumer.assign(partitions)
+
+
 def basic_consume_loop(consumer_: Consumer):
     global running
     try:
-        consumer_.subscribe([analysisRequestStoreTopic, analysisStoreTopic])
+        consumer_.subscribe([analysisRequestStoreTopic], on_assign=my_on_assign)
         while running:
             msg = consumer_.poll(timeout=1.0)
             if msg is None:
@@ -63,7 +75,7 @@ def msg_process(msg: Message):
     topic = msg.topic()
     decoded = msg.value().decode("utf-8")
     decoded_pb = json.loads(decoded)
-
+    print(decoded_pb)
     # print("Topic:", topic, decoded_pb)
     if topic == analysisRequestStoreTopic:
         init_msg = 'messageId' not in decoded_pb
@@ -71,6 +83,8 @@ def msg_process(msg: Message):
             print("Init message:", decoded_pb['streamId'])
             if not leader.is_target(decoded_pb['service']):
                 return
+            if 'historySize' not in decoded_pb:
+                decoded_pb['historySize'] = 0
             data = pb.InitRequest_Type0(
                 streamId=decoded_pb['streamId'],
                 service=decoded_pb['service'],
@@ -78,6 +92,8 @@ def msg_process(msg: Message):
             )
             servicer.init_type0(data)
         else:
+            if 'logs' not in decoded_pb:
+                return
             data = pb.AnalyzerRequest_Type0(
                 streamId=decoded_pb['streamId'],
                 messageId=decoded_pb['messageId'],

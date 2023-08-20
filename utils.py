@@ -8,6 +8,7 @@ from confluent_kafka import Producer
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import dotenv
+import pickle
 
 dotenv.load_dotenv()
 
@@ -43,9 +44,19 @@ class AnalyzerServicer:
 
     def __init__(self, _producer: Producer, analysis_store_topic: str):
         self.data_store = {}
-        self.prompt_template = "### SERVICE: {service}\n\n### HISTORY:\n{history}\n\n###RECENT LOGS:\n{recent}"
         self.producer = _producer
         self.analysis_store_topic = analysis_store_topic
+
+        self.DICT_DUMP_PATH = "./amber-dict-dump.pickle"
+        if os.path.exists(self.DICT_DUMP_PATH):
+            try:
+                with open(self.DICT_DUMP_PATH, 'rb') as handle:
+                    self.data_store = pickle.load(handle)
+                    print("Pickle load successful", os.getcwd())
+
+            except Exception:
+                print("Pickle load failed")
+            os.remove(self.DICT_DUMP_PATH)
 
     # Internally routes request to various models based on request parameters
     def route(self, req: pb.AnalyzerRequest_Type0):
@@ -64,10 +75,10 @@ class AnalyzerServicer:
         meta = self.data_store[str(req.streamId)]
         history = meta.get_history()
         fmt_out, out = analyze_log(
-                                   service=meta.service,
-                                   history=history,
-                                   recent=req.logs
-                                   )
+            service=meta.service,
+            history=history,
+            recent=req.logs
+        )
         meta.history.appendleft(out)
         res = build_analysis_dict(
             req.streamId, req.messageId,
@@ -77,9 +88,6 @@ class AnalyzerServicer:
         )
 
         return res
-
-    def admin_set_prompt_tmpl(self, request: str):
-        self.prompt_template = request
 
     def init_type0(self, request: pb.InitRequest_Type0):
         self.data_store[request.streamId] = DataStoreItem(
@@ -100,6 +108,9 @@ class AnalyzerServicer:
             value=json.dumps(analysis)
         )
         self.producer.flush()
+        print("Saving dict")
+        with open(self.DICT_DUMP_PATH, 'wb') as handle:
+            pickle.dump(self.data_store, handle, protocol=pickle.HIGHEST_PROTOCOL)
         return analysis
 
 

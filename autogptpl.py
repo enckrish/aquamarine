@@ -9,20 +9,22 @@ import json
 from transformers import AutoTokenizer, pipeline, logging as tf_logging
 from auto_gptq import AutoGPTQForCausalLM
 
+from utils import USE_LLM, DEBUG
 
-model_name_or_path = "TheBloke/WizardCoder-15B-1.0-GPTQ"
+if USE_LLM:
+    model_name_or_path = "TheBloke/WizardCoder-15B-1.0-GPTQ"
 
-tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
-model = AutoGPTQForCausalLM.from_quantized(model_name_or_path,
-                                           use_safetensors=True,
-                                           device="cuda:0",
-                                           use_triton=False,
-                                           quantize_config=None)
+    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
+    model = AutoGPTQForCausalLM.from_quantized(model_name_or_path,
+                                               use_safetensors=True,
+                                               device="cuda:0",
+                                               use_triton=False,
+                                               quantize_config=None)
 
-# Prevent printing spurious transformers error when using pipeline with AutoGPTQ
-tf_logging.set_verbosity(logging.CRITICAL)
+    # Prevent printing spurious transformers error when using pipeline with AutoGPTQ
+    tf_logging.set_verbosity(logging.CRITICAL)
 
-pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, return_full_text=False)
+    pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, return_full_text=False)
 
 logger = logging.getLogger()
 
@@ -55,15 +57,15 @@ def analyze_log(**kwargs: Unpack[PromptTemplateParams]):
     prompt = prompt_template.format(**kwargs)
 
     # print("Prompt:\n", prompt)
-    # LLM block
-    outputs = pipe(prompt, max_new_tokens=512, do_sample=True, temperature=0.1, top_k=50, top_p=0.95)
-    gen_text = outputs[0]['generated_text']
-    print(gen_text)
-    json_res = convert_llm_o_to_json(gen_text)
-
-    # Prompt format test code
-    # gen_text = "something in the way "
-    # json_res = {"rating": 3, "actions": ["Do something", "Do noting"], "review": "Good logs", "citation": 0}
+    if (not DEBUG) or (DEBUG and USE_LLM):
+        outputs = pipe(prompt, max_new_tokens=512, do_sample=True, temperature=0.1, top_k=50, top_p=0.95)
+        gen_text = outputs[0]['generated_text']
+        print(gen_text)
+        json_res = convert_llm_o_to_json(gen_text)
+    else:
+        # Prompt format test code
+        gen_text = "something in the way "
+        json_res = {"rating": 3, "actions": ["Do something", "Do noting"], "review": "Good logs", "citation": 0}
 
     history_item = history_template.format(recent=kwargs["recent"], generated=gen_text)
     return json_res, history_item
